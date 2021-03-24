@@ -8,6 +8,7 @@ class WorldTime {
    String time ; // the time in that location
    String flag ; // url to an asset flag icon
    String url ; // location url for api endpoint
+   bool isDayTime ; // true or false if daytime or not
 
    WorldTime({this.location,this.time,this.flag,this.url});
 
@@ -18,17 +19,20 @@ class WorldTime {
        Map data = jsonDecode(response.body);
 
        String datetime = data['datetime'];
-       //String offset = data['utc_offset'];
+       String offset = data['utc_offset'].substring(1.3);
        print(datetime);
-       //print(offset);
+       print(offset);
 
        //create DateTime object
        DateTime now = DateTime.parse(datetime);
-       // now.add(Duration(hours: '${offset'));
+       now.add(Duration(hours: int.parse(offset)));
        print(now);
 
        //set to time property
-       time = DateFormat.jm().format(now) ;
+       isDayTime =  (now == null ? false : now.hour > 6 && now.hour < 20) ;
+       print(isDayTime);
+       time = DateFormat.Hm().format(now) ;
+
      }catch(e){
         print('caught error: $e');
         time = 'could not get time data';
